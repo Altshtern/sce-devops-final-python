@@ -19,31 +19,33 @@ jobs:
 
     services:
       docker:
-        image: docker:dind
+        image: docker:29.1.5-dind
         options: --privileged
         ports:
           - 2375:2375
-    container:
-      image: ubuntu:latest
+        env:
+          DOCKER_TLS_CERTDIR: ""
+        volumes:
+          - /var/lib/docker
+    container: docker:20.10.16
+
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Install Docker
+        
+      - name: Set up Docker CLI
+        # The main container (which uses ubuntu-latest by default) needs the Docker CLI
+        # This step installs the CLI so it can talk to the DinD service
         run: |
-          apt-get update
-          apt-get install -y docker.io
-
-      - name: Test connection
-        run: |
-          apt-get update
-          apt-get install -y iputils-ping
-          ping -c 3 docker
-
-      - name: Test Docker
-        run: |
-          docker version
-          docker info
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          
+      - name: Build a test image
+        # Now Docker commands will use the DinD service
+        run: docker build -t test-image .
+        
+      - name: Run a container from the test image
+        run: docker run test-image echo "Docker in Docker works!"
 #     steps:
 #     - uses: actions/checkout@v3
 #     - name: Set up Python

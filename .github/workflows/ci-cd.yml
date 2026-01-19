@@ -1,0 +1,36 @@
+name: CI/CD Pipeline
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  build-and-push:
+    runs-on: self-hosted
+
+    services:
+      docker:
+        image: docker:29.1.5-dind
+        options: --privileged
+        ports:
+          - 2375:2375
+        env:
+          DOCKER_TLS_CERTDIR: ""
+        volumes:
+          - /var/lib/docker
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+          
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/sce-devops-final-python:latest

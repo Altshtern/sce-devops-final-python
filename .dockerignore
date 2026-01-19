@@ -45,3 +45,5 @@ Pipfile.lock
 
 # GitHub
 .github/
+
+sonar-project.properties
