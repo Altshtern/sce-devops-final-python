@@ -10,17 +10,8 @@ on:
 jobs:
   build-and-push:
     runs-on: self-hosted
-
-    services:
-      docker:
-        image: docker:29.1.5-dind
-        options: --privileged
-        ports:
-          - 2375:2375
-        env:
-          DOCKER_TLS_CERTDIR: ""
-        volumes:
-          - /var/lib/docker
+    container:
+      image: docker:29.1.5-dind
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
