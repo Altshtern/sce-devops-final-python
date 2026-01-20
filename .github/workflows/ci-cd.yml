@@ -47,13 +47,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          path: ~/app
+          path: app
           sparse-checkout: |
             docker-compose.yml
           sparse-checkout-cone-mode: false
 
       - name: Docker Compose changed
-        run: docker compose -f ~/app/docker-compose.yml down
+        run: docker compose -f "${{ github.workspace }}"/app/docker-compose.yml down
 
       - name: Docker Compose Deploy
-        run: docker compose -f ~/app/docker-compose.yml up -d --pull always
+        run: docker compose -f "${{ github.workspace }}"/app/docker-compose.yml up -d --pull always
