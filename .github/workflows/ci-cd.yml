@@ -28,6 +28,9 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/sce-devops-final-python:latest
+
+      - name: Clean workspace (for self-hosted runners)
+        run: rm -rf "${{ github.workspace }}"/*
   deploy:
     needs: build-and-push
     runs-on: self-hosted
@@ -43,10 +46,14 @@ jobs:
       #       docker-compose -f /path/to/your/docker-compose.yml up -d
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          path: ~/app
+          sparse-checkout: |
+            docker-compose.yml
+          sparse-checkout-cone: true
 
       - name: Docker Compose changed
-        if: github.event_name == 'push' && contains(github.event.head_commit.message, 'docker-compose.yml')
-        run: echo "Docker Compose file has changed." || docker compose -f docker-compose.yml down
+        run: docker compose -f ~/app/docker-compose.yml down
 
       - name: Docker Compose Deploy
-        run: docker compose -f docker-compose.yml up -d --pull always
+        run: docker compose -f ~/app/docker-compose.yml up -d --pull always
