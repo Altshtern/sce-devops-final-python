@@ -49,7 +49,4 @@ jobs:
         run: echo "Docker Compose file has changed." || docker compose -f docker-compose.yml down
 
       - name: Docker Compose Deploy
-        uses: docker/compose-action@v2
-        with:
-          compose-file: docker-compose.yml
-          args: up -d --pull always
+        run: docker compose -f docker-compose.yml up -d --pull always
