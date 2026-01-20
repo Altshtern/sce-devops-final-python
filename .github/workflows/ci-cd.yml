@@ -28,3 +28,28 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/sce-devops-final-python:latest
+  deploy:
+    needs: build-and-push
+    runs-on: self-hosted
+    steps:
+      # - name: SSH and Deploy
+      #   uses: appleboy/ssh-action@v0.1.7
+      #   with:
+      #     host: ${{ secrets.REMOTE_HOST }}
+      #     username: ${{ secrets.REMOTE_USER }}
+      #     key: ${{ secrets.REMOTE_SSH_KEY }}
+      #     script: |
+      #       docker pull ${{ secrets.DOCKERHUB_USERNAME }}/sce-devops-final-python:latest
+      #       docker-compose -f /path/to/your/docker-compose.yml up -d
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Docker Compose changed
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, 'docker-compose.yml')
+        run: echo "Docker Compose file has changed." || docker compose -f docker-compose.yml down
+
+      - name: Docker Compose Deploy
+        uses: docker/compose-action@v2
+        with:
+          compose-file: docker-compose.yml
+          args: up -d --pull always
