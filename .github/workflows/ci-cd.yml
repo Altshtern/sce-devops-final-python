@@ -50,7 +50,7 @@ jobs:
           path: ~/app
           sparse-checkout: |
             docker-compose.yml
-          sparse-checkout-cone: true
+          sparse-checkout-cone-mode: false
 
       - name: Docker Compose changed
         run: docker compose -f ~/app/docker-compose.yml down
