@@ -29,7 +29,7 @@ def create_tables():
 
 @app.route('/health')
 def health_check():
-    return jsonify({"status": "healthy", "message": "Application is running"}), 200
+    return jsonify({"status": "healthy 17:54", "message": "Application is running"}), 200
 
 
 @api.errorhandler(ValidationError)
