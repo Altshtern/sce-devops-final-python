@@ -4,13 +4,6 @@ on:
   push:
     branches:
       - main
-      - master
-    tags:
-      - 'v*'  # Trigger on tags like v1.0.0, v2.1.0, etc.
-  pull_request:
-    branches:
-      - main
-      - master
 
 env:
   DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/flask-app
