@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - feat/*
+      - main
+      - master
   workflow_dispatch:
 
 
